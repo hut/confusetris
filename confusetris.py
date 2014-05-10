@@ -6,7 +6,6 @@ from copy import deepcopy
 import getpass
 import os.path
 import pygame
-import random
 import sys
 import time
 from collections import deque
@@ -147,11 +146,14 @@ class Game(object):
             self.brick_y += 1
 
     def brick_rotate(self):
+        old_state = deepcopy(self.brick)
         for brick in self.brick:
             oldbrick = deepcopy(brick)
             for x in range(self.brickwid):
                 for y in range(self.brickwid):
                     brick[x][y] = oldbrick[self.brickwid - y - 1][x]
+        if self.would_a_move_collide(0, 0):
+            self.brick = old_state
 
     def drop(self):
         for x in range(self.brickwid):
