@@ -72,6 +72,12 @@ class Game(object):
         self.brick = []
         self.brick.append(deepcopy(self.all_bricks[self.brick1_type]))
         self.brick.append(deepcopy(self.all_bricks[self.brick2_type]))
+        for brick in self.brick:
+            for i in range(randint(0, 3)):
+                oldbrick = deepcopy(brick)
+                for x in range(self.brickwid):
+                    for y in range(self.brickwid):
+                        brick[x][y] = oldbrick[self.brickwid - y - 1][x]
         self.brick_x = int(self.grid_x / 2 - self.brickwid/2)
         self.brick_y = -3
         self.true_brick = choice(range(len(self.brick)))
