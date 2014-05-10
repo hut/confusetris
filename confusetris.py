@@ -59,13 +59,17 @@ class Game(object):
         self.grid = []
         for i in range(self.grid_x):
             self.grid.append([0] * self.grid_y)
+        self.shit_brick()
 
+    def shit_brick(self):
         self.brick1_type = randint(0, len(self.all_bricks) - 1)
         self.brick2_type = choice(list(set(range(len(self.all_bricks))) - set([self.brick1_type])))
-        self.brick1 = self.all_bricks[self.brick1_type]
-        self.brick2 = self.all_bricks[self.brick2_type]
+        self.brick = []
+        self.brick.append(self.all_bricks[self.brick1_type])
+        self.brick.append(self.all_bricks[self.brick2_type])
         self.brick_x = int(self.grid_x / 2 - self.brickwid/2)
         self.brick_y = -3
+        self.true_brick = choice(range(len(self.brick)))
 
     def log(self, *things):
         self.logged.extend([str(obj) for obj in things])
@@ -91,15 +95,18 @@ class Game(object):
         elif key == K_F11:
             pygame.display.toggle_fullscreen()
         elif key == K_h:
-            self.brick_x -= 1
+            if not self.would_a_move_collide(-1, 0):
+                self.brick_x -= 1
         elif key == K_l:
-            self.brick_x += 1
+            if not self.would_a_move_collide(1, 0):
+                self.brick_x += 1
         elif key == K_k:
-            self.brick_rotate()
+            pass
+#            self.brick_rotate()
 
     def keyhold(self, pressed):
         if (pressed[K_j] or pressed[K_s] or pressed[K_DOWN] or pressed[K_SPACE]):
-            self.speed = 3
+            self.speed = 10
         else:
             self.speed = 1
 #            acceleration[1] += 50.0
@@ -140,13 +147,38 @@ class Game(object):
                     self.brick_move_down()
 
     def brick_move_down(self):
-        self.brick_y += 1
+        if self.would_a_move_collide(0, 1):
+            print("Collision!")
+            for x in range(self.brickwid):
+                for y in range(self.brickwid):
+                    newx = self.brick_x + x
+                    newy = self.brick_y + y
+                    if newx >= 0 or newy >= 0 or newx < self.grid_x - 1 or newy < self.grid_y - 1:
+                        newcolor = self.brick[self.true_brick][x][y]
+                        if newcolor:
+                            self.grid[newx][newy] = newcolor
+            self.shit_brick()
+        else:
+            self.brick_y += 1
+
+    def would_a_move_collide(self, dx, dy):
+        for x in range(self.brickwid):
+            for y in range(self.brickwid):
+                if any(brick[x][y] for brick in self.brick):
+                    newx = self.brick_x + x + dx
+                    newy = self.brick_y + y + dy
+                    if newx < 0 or newx > self.grid_x - 1 or newy > self.grid_y - 1:
+                        return True
+                    if newy > 0 and self.grid[newx][newy]:
+                        return True
+        return False
 
     def draw_game(self):
         self.screen.fill(self.fillcolor)
 
         self.draw_hud()
         self.draw_brick()
+        self.draw_field()
         pygame.display.flip()
 
     def draw_brick(self):
@@ -157,13 +189,28 @@ class Game(object):
         y = (s+2)*(self.grid_y/2)
         for i in range(4):
             for j in range(4):
-                clr1 = self.colors[self.brick1[i][j]]
-                clr2 = self.colors[self.brick2[i][j]]
+                clr1 = self.colors[self.brick[0][i][j]]
+                clr2 = self.colors[self.brick[1][i][j]]
                 color = [clr1[0] + clr2[0], clr1[1] + clr2[1], clr1[2] + clr2[2]]
                 if any(color):
                     self.screen.fill((color[0], color[1], color[2]), \
-                            Rect(w-x + (j+self.brick_x)*(s+2), \
-                            h-y + (i+self.brick_y)*(s+2), s, s))
+                            Rect(w-x + (i+self.brick_x)*(s+2), \
+                            h-y + (j+self.brick_y)*(s+2), s, s))
+
+    def draw_field(self):
+        s = 30
+        w = game.w/2
+        h = game.h/2
+        x = (s+2)*(self.grid_x/2)
+        y = (s+2)*(self.grid_y/2)
+        for i in range(self.grid_x):
+            for j in range(self.grid_y):
+                clr = self.grid[i][j]
+                color = self.colors[clr]
+                if clr:
+                    self.screen.fill((color[0], color[1], color[2]), \
+                            Rect(w-x + (i)*(s+2), \
+                            h-y + (j)*(s+2), s, s))
 
     def draw_hud(self):
         s = 30
