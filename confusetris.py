@@ -177,13 +177,18 @@ class Game(object):
     def would_a_move_collide(self, dx, dy):
         for x in range(self.brickwid):
             for y in range(self.brickwid):
-                if any(brick[x][y] for brick in self.brick):
-                    newx = self.brick_x + x + dx
-                    newy = self.brick_y + y + dy
-                    if newx < 0 or newx > self.grid_x - 1 or newy > self.grid_y - 1:
-                        return True
-                    if newy > 0 and self.grid[newy][newx]:
-                        return True
+                if dy:
+                    if not self.brick[self.true_brick][x][y]:
+                        continue
+                else:
+                    if not any(brick[x][y] for brick in self.brick):
+                        continue
+                newx = self.brick_x + x + dx
+                newy = self.brick_y + y + dy
+                if newx < 0 or newx > self.grid_x - 1 or newy > self.grid_y - 1:
+                    return True
+                if newy > 0 and self.grid[newy][newx]:
+                    return True
         return False
 
     def draw_game(self):
