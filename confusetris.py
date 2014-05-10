@@ -60,6 +60,7 @@ class Game(object):
     def reset_game(self):
         self.logged = deque(maxlen=30)
         self.game_time = 0
+        self.score = 0
         self.grid = []
         for i in range(self.grid_y):
             self.grid.append([0] * self.grid_x)
@@ -107,12 +108,15 @@ class Game(object):
                 self.brick_x += 1
         elif key in (K_k, K_SPACE, K_UP):
             self.brick_rotate()
+        elif key in (K_p, K_RETURN):
+            self.pause ^= True
+
 
     def keyhold(self, pressed):
         if (pressed[K_j] or pressed[K_s] or pressed[K_DOWN]):
-            self.speed = 10
+            self.speed = 15
         else:
-            self.speed = 1
+            self.speed = min(int(self.score / 1000 + 1), 15)
 
     def loop(self):
         next_log_refresh = 0
@@ -176,6 +180,7 @@ class Game(object):
         while i < len(self.grid):
             if all(self.grid[i]):
                 del self.grid[i]
+                self.score += 100
             i += 1
         while len(self.grid) < self.grid_y:
             self.grid.insert(0, [0] * self.grid_x)
@@ -203,6 +208,8 @@ class Game(object):
         self.draw_hud()
         self.draw_brick()
         self.draw_field()
+        text = self.font.render("Score: %d" % self.score, 1, (255, 255, 255))
+        self.screen.blit(text, (20, 20))
         pygame.display.flip()
 
     def draw_brick(self):
