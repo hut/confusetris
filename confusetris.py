@@ -88,11 +88,27 @@ class Game(object):
     def keypress(self, key):
         if key == K_ESCAPE:
             raise SystemExit()
-        if key == K_F11:
+        elif key == K_F11:
             pygame.display.toggle_fullscreen()
+        elif key == K_h:
+            self.brick_x -= 1
+        elif key == K_l:
+            self.brick_x += 1
+        elif key == K_k:
+            self.brick_rotate()
 
-    def keyhold(self, key):
-        pass
+    def keyhold(self, pressed):
+        if (pressed[K_j] or pressed[K_s] or pressed[K_DOWN] or pressed[K_SPACE]):
+            self.speed = 3
+        else:
+            self.speed = 1
+#            acceleration[1] += 50.0
+#        if (pressed[K_k] or pressed[K_w] or pressed[K_UP]) and g.active:
+#            acceleration[1] -= 50.0
+#        if (pressed[K_h] or pressed[K_a] or pressed[K_LEFT]) and g.active:
+#            acceleration[0] -= 50.0
+#        if (pressed[K_l] or pressed[K_d] or pressed[K_RIGHT]) and g.active:
+#            acceleration[0] += 50.0
 
     def loop(self):
         next_log_refresh = 0
@@ -119,8 +135,8 @@ class Game(object):
             if not self.pause:
                 self.dt = time.time() - time_before
                 self.game_time += self.dt
-                if self.game_time > previous_tick:
-                    previous_tick = self.game_time + 0.5
+                if self.game_time > previous_tick + (0.5 / self.speed):
+                    previous_tick = self.game_time
                     self.brick_move_down()
 
     def brick_move_down(self):
