@@ -2,6 +2,7 @@
 # Copyright (C) 2014  Roman Zimbelmann <hut@lavabit.com>
 # This software is distributed under the terms of the GNU GPL version 3.
 
+from copy import deepcopy
 import getpass
 import os.path
 import pygame
@@ -66,8 +67,8 @@ class Game(object):
         self.brick2_type = randint(0, len(self.all_bricks) - 1)
 #        self.brick2_type = choice(list(set(range(len(self.all_bricks))) - set([self.brick1_type])))
         self.brick = []
-        self.brick.append(self.all_bricks[self.brick1_type])
-        self.brick.append(self.all_bricks[self.brick2_type])
+        self.brick.append(deepcopy(self.all_bricks[self.brick1_type]))
+        self.brick.append(deepcopy(self.all_bricks[self.brick2_type]))
         self.brick_x = int(self.grid_x / 2 - self.brickwid/2)
         self.brick_y = -3
         self.true_brick = choice(range(len(self.brick)))
@@ -103,7 +104,7 @@ class Game(object):
                 self.brick_x += 1
         elif key == K_k:
             pass
-#            self.brick_rotate()
+            self.brick_rotate()
 
     def keyhold(self, pressed):
         if (pressed[K_j] or pressed[K_s] or pressed[K_DOWN] or pressed[K_SPACE]):
@@ -152,6 +153,13 @@ class Game(object):
             self.drop()
         else:
             self.brick_y += 1
+
+    def brick_rotate(self):
+        for brick in self.brick:
+            oldbrick = deepcopy(brick)
+            for x in range(self.brickwid):
+                for y in range(self.brickwid):
+                    brick[x][y] = oldbrick[self.brickwid - y - 1][x]
 
     def drop(self):
         for x in range(self.brickwid):
