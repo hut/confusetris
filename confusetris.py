@@ -96,28 +96,20 @@ class Game(object):
             raise SystemExit()
         elif key == K_F11:
             pygame.display.toggle_fullscreen()
-        elif key == K_h:
+        elif key in (K_h, K_a, K_LEFT):
             if not self.would_a_move_collide(-1, 0):
                 self.brick_x -= 1
-        elif key == K_l:
+        elif key in (K_l, K_d, K_RIGHT):
             if not self.would_a_move_collide(1, 0):
                 self.brick_x += 1
-        elif key == K_k:
-            pass
+        elif key in (K_k, K_SPACE, K_UP):
             self.brick_rotate()
 
     def keyhold(self, pressed):
-        if (pressed[K_j] or pressed[K_s] or pressed[K_DOWN] or pressed[K_SPACE]):
+        if (pressed[K_j] or pressed[K_s] or pressed[K_DOWN]):
             self.speed = 10
         else:
             self.speed = 1
-#            acceleration[1] += 50.0
-#        if (pressed[K_k] or pressed[K_w] or pressed[K_UP]) and g.active:
-#            acceleration[1] -= 50.0
-#        if (pressed[K_h] or pressed[K_a] or pressed[K_LEFT]) and g.active:
-#            acceleration[0] -= 50.0
-#        if (pressed[K_l] or pressed[K_d] or pressed[K_RIGHT]) and g.active:
-#            acceleration[0] += 50.0
 
     def loop(self):
         next_log_refresh = 0
