@@ -22,8 +22,8 @@ class Game(object):
         self.h = 600
         self.font_name = None
         self.font_size = 16, 24
-        self.maxfps = 30
-        self.grid_y = 16
+        self.maxfps = 10
+        self.grid_y = 18
         self.grid_x = 8
 
         # initialized in init_pygame()
@@ -69,7 +69,6 @@ class Game(object):
     def shit_brick(self):
         self.brick1_type = randint(0, len(self.all_bricks) - 1)
         self.brick2_type = randint(0, len(self.all_bricks) - 1)
-#        self.brick2_type = choice(list(set(range(len(self.all_bricks))) - set([self.brick1_type])))
         self.brick = []
         self.brick.append(deepcopy(self.all_bricks[self.brick1_type]))
         self.brick.append(deepcopy(self.all_bricks[self.brick2_type]))
@@ -254,7 +253,7 @@ class Game(object):
         pygame.draw.rect(self.screen, (0, 255, 0), Rect(w-x-1, h-y-1, x*2, y*2), 2)
         for i in range(nx):
             for j in range(ny):
-                pygame.draw.rect(self.screen, (64, 64, 64), Rect(w-x + i*(s+2), h-y + j*(s+2), s, s), 1)
+                pygame.draw.rect(self.screen, (32, 32, 32), Rect(w-x + i*(s+2), h-y + j*(s+2), s, s), 1)
 
 
 if __name__ == '__main__':
