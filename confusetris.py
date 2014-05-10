@@ -57,13 +57,14 @@ class Game(object):
         self.logged = deque(maxlen=30)
         self.game_time = 0
         self.grid = []
-        for i in range(self.grid_x):
-            self.grid.append([0] * self.grid_y)
+        for i in range(self.grid_y):
+            self.grid.append([0] * self.grid_x)
         self.shit_brick()
 
     def shit_brick(self):
         self.brick1_type = randint(0, len(self.all_bricks) - 1)
-        self.brick2_type = choice(list(set(range(len(self.all_bricks))) - set([self.brick1_type])))
+        self.brick2_type = randint(0, len(self.all_bricks) - 1)
+#        self.brick2_type = choice(list(set(range(len(self.all_bricks))) - set([self.brick1_type])))
         self.brick = []
         self.brick.append(self.all_bricks[self.brick1_type])
         self.brick.append(self.all_bricks[self.brick2_type])
@@ -148,18 +149,30 @@ class Game(object):
 
     def brick_move_down(self):
         if self.would_a_move_collide(0, 1):
-            print("Collision!")
-            for x in range(self.brickwid):
-                for y in range(self.brickwid):
-                    newx = self.brick_x + x
-                    newy = self.brick_y + y
-                    if newx >= 0 or newy >= 0 or newx < self.grid_x - 1 or newy < self.grid_y - 1:
-                        newcolor = self.brick[self.true_brick][x][y]
-                        if newcolor:
-                            self.grid[newx][newy] = newcolor
-            self.shit_brick()
+            self.drop()
         else:
             self.brick_y += 1
+
+    def drop(self):
+        for x in range(self.brickwid):
+            for y in range(self.brickwid):
+                newx = self.brick_x + x
+                newy = self.brick_y + y
+                if newx >= 0 or newy >= 0 or newx < self.grid_x - 1 or newy < self.grid_y - 1:
+                    newcolor = self.brick[self.true_brick][x][y]
+                    if newcolor:
+                        self.grid[newy][newx] = newcolor
+        self.clear_lines()
+        self.shit_brick()
+
+    def clear_lines(self):
+        i = 0
+        while i < len(self.grid):
+            if all(self.grid[i]):
+                del self.grid[i]
+            i += 1
+        while len(self.grid) < self.grid_y:
+            self.grid.insert(0, [0] * self.grid_x)
 
     def would_a_move_collide(self, dx, dy):
         for x in range(self.brickwid):
@@ -169,7 +182,7 @@ class Game(object):
                     newy = self.brick_y + y + dy
                     if newx < 0 or newx > self.grid_x - 1 or newy > self.grid_y - 1:
                         return True
-                    if newy > 0 and self.grid[newx][newy]:
+                    if newy > 0 and self.grid[newy][newx]:
                         return True
         return False
 
@@ -205,7 +218,7 @@ class Game(object):
         y = (s+2)*(self.grid_y/2)
         for i in range(self.grid_x):
             for j in range(self.grid_y):
-                clr = self.grid[i][j]
+                clr = self.grid[j][i]
                 color = self.colors[clr]
                 if clr:
                     self.screen.fill((color[0], color[1], color[2]), \
