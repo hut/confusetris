@@ -35,7 +35,7 @@ class Game(object):
         self.screen = None
         self.pause = False
         self.brickwid = 4
-        self.colors = [[0, 0, 0], [0x7f, 0x30, 0x30], [0x30, 0x7f, 0x30], [0x30, 0x30, 0x7f], [0x7f, 0x7f, 0x30], [0x30, 0x7f, 0x7f]]
+        self.colors = [[0, 0, 0], [0x7f, 0x30, 0x30], [0x30, 0x7f, 0x30], [0x30, 0x30, 0x7f], [0x7f, 0x7f, 0x30], [0x30, 0x7f, 0x7f], [0x7f, 0x30, 0x7f]]
         self.all_bricks = [
                 [[0, 1, 0, 0],
                  [0, 1, 0, 0],
@@ -56,6 +56,10 @@ class Game(object):
                 [[0, 0, 5, 0],
                  [0, 5, 5, 0],
                  [0, 5, 0, 0],
+                 [0, 0, 0, 0]],
+                [[0, 6, 6, 0],
+                 [0, 0, 6, 0],
+                 [0, 0, 6, 0],
                  [0, 0, 0, 0]],
             ]
 
