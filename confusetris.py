@@ -28,6 +28,7 @@ class Game(object):
         self.logged = deque(maxlen=30)
 
         # initialized in init_pygame()
+        self.game_time = 0
         self.clock = None
         self.font = None
         self.font_small = None
@@ -59,7 +60,6 @@ class Game(object):
             ]
 
     def reset_game(self):
-        self.game_time = 0
         self.score = 0
         self.grid = []
         for i in range(self.grid_y):
@@ -81,6 +81,12 @@ class Game(object):
         self.brick_x = int(self.grid_x / 2 - self.brickwid/2)
         self.brick_y = -3
         self.true_brick = choice(range(len(self.brick)))
+        if self.would_a_move_collide(0, 2):
+            self.game_over()
+
+    def game_over(self):
+        self.log("Game Over! Final Score: %d" % self.score)
+        self.reset_game()
 
     def log(self, *things):
         self.logged.extend([str(obj) for obj in things])
@@ -115,6 +121,8 @@ class Game(object):
             self.brick_rotate()
         elif key in (K_p, K_RETURN):
             self.pause ^= True
+        elif key == K_F1:
+            self.reset_game()
 
 
     def keyhold(self, pressed):
