@@ -25,6 +25,7 @@ class Game(object):
         self.maxfps = 10
         self.grid_y = 18
         self.grid_x = 8
+        self.logged = deque(maxlen=30)
 
         # initialized in init_pygame()
         self.clock = None
@@ -58,7 +59,6 @@ class Game(object):
             ]
 
     def reset_game(self):
-        self.logged = deque(maxlen=30)
         self.game_time = 0
         self.score = 0
         self.grid = []
@@ -213,9 +213,19 @@ class Game(object):
         self.draw_hud()
         self.draw_brick()
         self.draw_field()
+        self.draw_log()
         text = self.font.render("Score: %d" % self.score, 1, (255, 255, 255))
-        self.screen.blit(text, (20, 20))
+        self.screen.blit(text, (550, 20))
         pygame.display.flip()
+
+    def draw_log(self):
+        x, y = 20, 0
+        for line in self.logged:
+            if not line:
+                continue
+            text = self.font.render(line, 1, (255, 255, 255))
+            self.screen.blit(text, (x, y))
+            y += text.get_rect().height + 2
 
     def draw_brick(self):
         s = 30
