@@ -121,8 +121,10 @@ class Game(object):
         elif key in (K_l, K_d, K_RIGHT):
             if not self.would_a_move_collide(1, 0):
                 self.brick_x += 1
-        elif key in (K_k, K_SPACE, K_UP):
+        elif key in (K_k, K_UP):
             self.brick_rotate()
+        elif key == K_SPACE:
+            self.brick_drop()
         elif key in (K_p, K_RETURN):
             self.pause ^= True
         elif key == K_F1:
@@ -167,8 +169,14 @@ class Game(object):
     def brick_move_down(self):
         if self.would_a_move_collide(0, 1):
             self.drop()
+            return False
         else:
             self.brick_y += 1
+            return True
+
+    def brick_drop(self):
+        while self.brick_move_down():
+            pass
 
     def brick_rotate(self):
         old_state = deepcopy(self.brick)
