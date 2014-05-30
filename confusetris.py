@@ -1,5 +1,5 @@
 #!/usr/bin/python2
-# Copyright (C) 2014  Roman Zimbelmann <hut@lavabit.com>
+# Copyright (C) 2014  Roman Zimbelmann <hut@lepus.uberspace.de>
 # This software is distributed under the terms of the GNU GPL version 3.
 
 from copy import deepcopy
