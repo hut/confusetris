@@ -206,7 +206,8 @@ class Game(object):
             if all(self.grid[i]):
                 del self.grid[i]
                 self.score += 100
-            i += 1
+            else:
+                i += 1
         while len(self.grid) < self.grid_y:
             self.grid.insert(0, [0] * self.grid_x)
 
